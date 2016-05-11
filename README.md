@@ -1,5 +1,5 @@
 # Space-Travel-Script-System
-a connected system of scripts for use in kOS, a Kerbal Space Program mod
+A connected system of scripts for use in kOS, a Kerbal Space Program mod
 for KSP v 1.1 and kOS v 0.20.0
 
 #Intent
