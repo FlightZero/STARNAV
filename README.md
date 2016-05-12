@@ -3,7 +3,7 @@ A connected system of scripts for use in kOS, a Kerbal Space Program mod
 for KSP v 1.1 and kOS v 0.20.0
 
 #Intent
-As my first foray into kOS, this will be centralized place to store, update and share my kOS programs.
+As my first foray into kOS, this will be centralized place to store, update and share my kOS programs. This is a window into a learning process. I have experienced some frustration with advanced scripts that other coders have shared- I find that simple resources would work better. Hopefully my rudimentary initial efforts will help other kOS beginners by presenting simple initial steps. 
 
 #Design Principles
 1. Modular: scripts are re-usable, may be combined, or used alone.
