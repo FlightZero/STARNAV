@@ -6,7 +6,7 @@ Sequence of problems to solve
 
 2. COAST TO HORIZONTAL VELOCITY CANCEL BURN (HVCB): Wait until craft is 3000 m above surface
 
-3. HCVB: this should run until horizontal velocity is < 1 m/s, when precision is introduced this should happen at nearest approach to target area 
+3. HVCB: this should run until horizontal velocity is < 1 m/s, when precision is introduced this should happen at nearest approach to target area 
   a. Cancel out horizontal velocity.
       If horizontal velocity < .05 m/s, lock steering to up.
       Else lock steering to surface retrograde + a variable distance from 90 deg depending on the distance from 90 of the retro vector.
