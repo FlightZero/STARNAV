@@ -20,10 +20,10 @@ This is how I'll standardize my code. I've tried to fall in line with what other
   - Programs with parameter: Two word. "launch_to.ks"
   - Functions: two word, preceded by "f_". "f_info_screen"
   - Variables: two word. "lower_case"
-- Brackets: 
-``` 
-           IF x THEN {
+  - Brackets: 
+```        
+          IF x THEN {
             action. 
           }
 ```
-
+  
