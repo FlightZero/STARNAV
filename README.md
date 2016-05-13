@@ -14,12 +14,12 @@ As my first foray into kOS, this will be centralized place to store, update and 
 #Style Guide
 This is how I'll standardize my code. I've tried to fall in line with what other community members seem to be converging on for Kerbal Script, but I'll use my own conventions where I think it helps with clarity/ readability/ my personal understanding. 
 - Indents: one space.
-- Variables: descriptive, under_score
+- Variables: descriptive, under_score style.
 - Names:
-  - programs: One or two-word. "program.ks"
-  - programs with parameter: Two word. "launch_to.ks"
-  - functions: two word, preceded by "f_". "f_info_screen"
-  - variables: two word. "lower_case"
+  - Programs: one or two-word. "program.ks"
+  - Programs with parameter: Two word. "launch_to.ks"
+  - Functions: two word, preceded by "f_". "f_info_screen"
+  - Variables: two word. "lower_case"
 - Brackets: 
            IF x THEN {
             action. 
