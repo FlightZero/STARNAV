@@ -3,6 +3,8 @@
 - use dot product to compare two vectors and see if they're facing to/ away from each other
 - preserve triggers set up by WHEN statements using PRESERVE. 
 - you can use vector exclude to remove vert/ horizontal v component 
+- use structures to find either direction or vector 
+- using dot product to check for vectors more than perpendicular to each other 
 
 
 #Research resources 
