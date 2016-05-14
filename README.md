@@ -13,17 +13,19 @@ As my first foray into kOS, this will be centralized place to store, update and 
 
 #Style Guide
 This is how I'll standardize my code. I've tried to fall in line with what other community members seem to be converging on for Kerbal Script, but I'll use my own conventions where I think it helps with clarity/ readability/ my personal understanding. 
-- Indents: one space.
-- Variables: descriptive, under_score style.
-- Names:
-  - Programs: one or two-word. "program.ks"
-  - Programs with parameter: Two word. "launch_to.ks"
-  - Functions: two word, preceded by "f_". "f_info_screen"
-  - Variables: two word. "lower_case"
-  - Brackets: 
+- Brackets: 
 ```        
           IF x THEN {
             action. 
           }
 ```
+- Commands, flow control, kOS variables: UPPERCASE for clarity, and to role-play working on 1970's era computers.
+- Indents: one space.
+- Names:
+  - Programs: one or two-word. "program.ks"
+  - Programs with parameter: Two word. "launch_to.ks"
+  - Functions: two word, preceded by "f_". "f_info_screen"
+  - Variables: descriptive, two word. "lower_case"
+
+
   
