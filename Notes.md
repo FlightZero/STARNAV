@@ -12,3 +12,5 @@ https://www.reddit.com/r/Kos/comments/35nv23/finding_the_ships_current_velocity_
 https://www.reddit.com/r/KerbalSpaceProgram/comments/2k3djr/30_kerbals_gave_their_lives_to_make_this_kos/
 http://www.samansari.info/2016/01/building-pid-hover-controller-for.html
 https://www.reddit.com/r/Kos/comments/31x3o8/kos_launch_script_works_with_any_staging_to_any/
+http://www.troyfawkes.com/adventures-in-ksp-kos-math/
+https://github.com/eblume/RexTech/blob/master/hover.ks
