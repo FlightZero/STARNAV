@@ -1,6 +1,8 @@
 //functionlibrary.ks: loads functions into the active program
 //created and shared under the MIT License by FlightZero
 
+SET burn_height TO 0.
+
 //Control panel graphic display function
 DECLARE function f_info_screen {
 
@@ -15,6 +17,8 @@ DECLARE function f_info_screen {
 	PRINT " ".
   PRINT "        STATUS: " + current_status.
 	PRINT " ".
+	PRINT "          BURN: " + burn_height.
+
 	WAIT 0.
 }
 
