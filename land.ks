@@ -3,6 +3,18 @@
 
 run functionlibrary.
 
+SET sP TO 10.
+SET sI TO 0.1.
+SET sD TO 0.05.
+SET sSP TO 0.
+SET p_pid TO PIDLOOP(sP, sI, sD, -50, 50).
+SET p_pid:SETPOINT TO sSP.
+SET y_pid TO PIDLOOP(sP, sI, sD, -50, 50).
+SET y_pid:SETPOINT TO sSP.
+
+SET my_pitch TO 0.
+SET my_yaw TO 0.
+
 SET g TO BODY:MU / BODY:RADIUS^2.
 LOCK accvec TO SHIP:SENSORS:ACC - SHIP:SENSORS:GRAV.
 LOCK gforce TO accvec:MAG / g.
@@ -14,7 +26,7 @@ SET goal_speed TO 0.
 SET Kp to 0.4.
 SET Kd to 0.4.
 
-SET current_script TO "LAND build 3".
+SET current_script TO "LAND build 4".
 SET current_status TO "INITIALIZED".
 
 // All running engines
@@ -54,7 +66,7 @@ UNTIL runmode = 0 {
       SET current_status TO "EXECUTE HVCB".
       LOCK STEERING TO LOOKDIRUP(UP:VECTOR - .1 * vxcl(up:vector, velocity:surface), ship:facing:topvector).
       SET thrott_point TO 1.
-      WHEN ship:groundspeed <= 2 THEN {
+      WHEN ship:groundspeed <= 5 THEN {
         SET thrott_point TO 0.
         SET runmode to 3.
       }
