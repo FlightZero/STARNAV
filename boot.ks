@@ -6,13 +6,13 @@ CLEARSCREEN.
 COPY functionlibrary from 0.
 COPY launch_to from 0.
 COPY donode from 0.
-COPY node_peri from 0.
-COPY node_apo from 0.
-COPY circ from 0.
-COPY hover from 0.
-COPY test2 from 0.
+// COPY test from 0.
+// COPY land from 0.
+// COPY node_peri from 0.
+// COPY node_apo from 0.
+// COPY circ from 0.
 RUN functionlibrary.
-SET current_script TO "BOOT build 6".
+SET current_script TO "BOOT build 5".
 SET current_status TO "BOOTED".
 
 PRINT "  _____ _______       _____  _   _     __      __".

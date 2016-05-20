@@ -22,12 +22,7 @@ UNTIL runmode = 0 {
 // 2. COAST TO HORIZONTAL VELOCITY CANCEL BURN (HVCB): Wait until craft is 5000 m above surface
   IF runmode = 2 {
     IF SHIP:ALTITUDE < 5000 {
-
-      UNTIL ship:groundspeed < 5 {
-        LOCK STEERING TO LOOKDIRUP(UP:VECTOR - .1 * vxcl(up:vector, velocity:surface), ship:facing:topvector).
-        LOCK THROTTLE TO 1.
-      }
-      LOCK THROTTLE TO 0.
+      
     }
   }
 //

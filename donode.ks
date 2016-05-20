@@ -3,7 +3,7 @@
 
 //loads library of functions for use in this program
 run functionlibrary.
-SET current_script TO "NODE EXECUTOR build 17".
+SET current_script TO "NODE EXECUTOR build 16".
 SET current_status TO "INITIALIZED".
 
 
@@ -38,7 +38,7 @@ UNTIL runmode = 0 {
 		wait until nd:eta < burntime/2.
 		set current_status TO "BURNING!".
 		//a tuned logistic function that drops thottle as a function of delta v remaining
-		lock throttle to 1 / ( 1 + (CONSTANT:E ^ (-0.13 * ( nd:deltav:mag - 30)))) .
+		lock throttle to 1 / ( 1 + (CONSTANT:E ^ (-0.072 * ( nd:deltav:mag - 55)))) .
 
 		IF VDOT(nd:deltav, node_vector) <= 0 {
 			lock throttle to 0.
@@ -58,7 +58,6 @@ UNTIL runmode = 0 {
 	}
 }
 f_info_screen().
-SAS on.
 UNLOCK throttle.
 UNLOCK steering.
 REMOVE nd.
