@@ -1,6 +1,7 @@
 // Change apoapsis.
 // Establish new apoapsis by performing a burn at periapsis.
 //code by xeger, modified to take alt in kilometers
+//https://github.com/xeger/kos-ramp
 
 parameter alt.
 
