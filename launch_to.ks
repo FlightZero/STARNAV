@@ -18,13 +18,8 @@ run functionlibrary.
 WHEN ALTITUDE > 60000 THEN
 {
 	SET AG10 to TRUE.
-	Wait 3.
-	Panels ON.
-	SET antenna TO SHIP:PARTSDUBBED("Communotron 16").
-	FOR ant IN antenna {
-	    ant:GETMODULE("ModuleRTAntenna"):DOEVENT("ACTIVATE").
-	}
 }
+
 
 //Initialize sequence and enter the runmode loop
 LOCK STEERING TO desired_direction.
