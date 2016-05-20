@@ -10,6 +10,7 @@ SET orbit_alt to orbit_alt * 1000.
 SET current_script TO "LAUNCH v0.1 build 66".
 SET current_status TO "INITIALIZED".
 
+SET burn_height TO 0.
 //loads library of functions for use in this program
 run functionlibrary.
 

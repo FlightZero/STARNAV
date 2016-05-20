@@ -109,6 +109,7 @@ UNTIL runmode = 0 {
     SET sP TO 10.
     SET sI TO 0.1.
     SET sD TO 0.05.
+    SET sSP TO 0.
 
     SET p_pid TO PIDLOOP(sP, sI, sD, -45, 45).
     SET p_pid:SETPOINT TO sSP.

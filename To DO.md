@@ -1,7 +1,8 @@
 ###Things to do
 - call node_apo from setupcomms instead of circ.
-- TWR/ terminal velocity control for launch script
-- abort condition checking for launch script 
+- TWR/ terminal velocity control for launch script.
+- abort condition checking for launch script.
+- change initial facing on launch script.
 
 ###Done
 - add warp into donode.
