@@ -3,18 +3,6 @@
 
 run functionlibrary.
 
-SET sP TO 10.
-SET sI TO 0.1.
-SET sD TO 0.05.
-SET sSP TO 0.
-SET p_pid TO PIDLOOP(sP, sI, sD, -50, 50).
-SET p_pid:SETPOINT TO sSP.
-SET y_pid TO PIDLOOP(sP, sI, sD, -50, 50).
-SET y_pid:SETPOINT TO sSP.
-
-SET my_pitch TO 0.
-SET my_yaw TO 0.
-
 SET g TO BODY:MU / BODY:RADIUS^2.
 LOCK accvec TO SHIP:SENSORS:ACC - SHIP:SENSORS:GRAV.
 LOCK gforce TO accvec:MAG / g.
