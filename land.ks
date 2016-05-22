@@ -62,7 +62,9 @@ UNTIL runmode = 0 {
 //Execute HVCB
   IF runmode = 2 {
     SET current_status TO "COAST TO HVCB".
-    IF SHIP:ALTITUDE < 7000 {        //tie this to terrain height 
+
+    IF SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT < 10000 {
+
       SET current_status TO "EXECUTE HVCB".
       LOCK STEERING TO LOOKDIRUP(UP:VECTOR - .1 * vxcl(up:vector, velocity:surface), ship:facing:topvector).
       SET thrott_point TO 1.
@@ -82,7 +84,7 @@ UNTIL runmode = 0 {
     LOCAL P_i IS SHIP:ALTITUDE + BODY:RADIUS.
     LOCAL P_f IS SHIP:ALTITUDE - ALT:RADAR.
     //LOCK P_x TO ( CONSTANT:G * b_mass * ( (1 / P_f)  - (1/P_i)) / max_acceleration) + P_f.
-    LOCK burn_height TO  SHIP:VERTICALSPEED^2 / (2 * (max_acceleration - .491)).//SHIP:SENSORS:GRAV:MAG).
+    LOCK burn_height TO  SHIP:VERTICALSPEED^2 / (2 * (max_acceleration - force_g)).//SHIP:SENSORS:GRAV:MAG).
 
     //Suicide burn
     //landing equation from CalebJ2
