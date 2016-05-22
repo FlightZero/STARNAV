@@ -62,7 +62,9 @@ UNTIL runmode = 0 {
 //Execute HVCB
   IF runmode = 2 {
     SET current_status TO "COAST TO HVCB".
+
     IF SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT < 10000 {
+
       SET current_status TO "EXECUTE HVCB".
       LOCK STEERING TO LOOKDIRUP(UP:VECTOR - .1 * vxcl(up:vector, velocity:surface), ship:facing:topvector).
       SET thrott_point TO 1.

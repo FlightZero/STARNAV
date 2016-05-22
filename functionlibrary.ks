@@ -17,8 +17,6 @@ DECLARE function f_info_screen {
 	PRINT " ".
   PRINT "        STATUS: " + current_status.
 	PRINT " ".
-	PRINT "          BURN: " + burn_height.
-
 	WAIT 0.
 }
 
