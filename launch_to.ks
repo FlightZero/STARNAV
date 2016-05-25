@@ -19,6 +19,8 @@ run functionlibrary.
 WHEN ALTITUDE > 60000 THEN
 {
 	SET AG10 to TRUE.
+	WAIT 2.
+	SET AG9 to TRUE.
 }
 
 
