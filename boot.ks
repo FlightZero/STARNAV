@@ -12,6 +12,8 @@ COPY circ from 0.
 COPY land from 0.
 COPY launch_ssto from 0.
 COPY autoland from 0.
+COPY rdv from 0.
+COPY rdvinfo from 0.
 RUN functionlibrary.
 SET current_script TO "BOOT build 7".
 SET current_status TO "BOOTED".
