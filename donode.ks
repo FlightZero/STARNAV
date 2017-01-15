@@ -3,7 +3,7 @@
 
 //loads library of functions for use in this program
 run functionlibrary.
-SET current_script TO "NODE EXECUTOR build 22".
+SET current_script TO "NODE EXECUTOR build 23".
 SET current_status TO "INITIALIZED".
 
 
