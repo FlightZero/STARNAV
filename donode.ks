@@ -3,7 +3,7 @@
 
 //loads library of functions for use in this program
 run functionlibrary.
-SET current_script TO "NODE EXECUTOR build 19".
+SET current_script TO "NODE EXECUTOR build 22".
 SET current_status TO "INITIALIZED".
 
 
@@ -60,11 +60,23 @@ UNTIL runmode = 0 {
 			SET burntime to end_time - start_time.
 			SET current_status TO "BURN TIME NEEDED: " + round( burntime, 2) + " SECONDS".
 			f_info_screen(). //calling info before we go into the wait
-			IF nd:eta > (burntime/2) + 10 {
-				WARPTO(TIME:SECONDS + nd:eta - ((burntime/2) +15)). //15 seconds before burn start
+
+			//check to see if below atmosphere before burning.
+			IF SHIP:ALTITUDE > BODY:ATM:HEIGHT {
+				IF nd:eta > (burntime/2) + 10 {
+					WARPTO(TIME:SECONDS + nd:eta - ((burntime/2) +15)). //15 seconds before burn start
+				}
+				WAIT until nd:eta < ( burntime/2 ) + 10.  // ten seconds before burn start
+				SET runmode to 2.
 			}
-			WAIT until nd:eta < ( burntime/2 ) + 10.  // ten seconds before burn start
-			SET runmode to 2.
+			ELSE {
+				WAIT UNTIL SHIP:ALTITUDE > BODY:ATM:HEIGHT.
+				IF nd:eta > (burntime/2) + 10 {
+					WARPTO(TIME:SECONDS + nd:eta - ((burntime/2) +15)). //15 seconds before burn start
+				}
+				WAIT until nd:eta < ( burntime/2 ) + 10.  // ten seconds before burn start
+				SET runmode to 2.
+			}
 		}
 	}
 
