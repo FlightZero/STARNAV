@@ -1,7 +1,33 @@
-// //land.ks: land a capable craft from orbit to surface
-// //created and shared under the MIT License by FlightZero.
-//
-// run functionlibrary.
+//land.ks: land a capable craft from orbit to surface
+//created and shared under the MIT License by FlightZero.
+
+run functionlibrary.
+SET current_script TO "LAND 0.2 build 1".
+SET current_status TO "INITIALIZED".
+set data2title TO "PERIAPSIS: ".
+set data2length TO 11.
+set data2 TO ROUND(PERIAPSIS).
+
+
+SAS OFF.
+SET runmode to 1.
+
+UNTIL runmode = 0 {
+    IF runmode = 1 {
+      SET current_status TO "DEORBIT BURN".
+      SET retro TO R(RETROGRADE:PITCH, RETROGRADE:YAW, SHIP:FACING:ROLL).
+      LOCK steering to retro.
+      IF vdot(RETROGRADE:VECTOR, SHIP:FACING:VECTOR) > .99 {
+        SET current_status TO "ALIGNED".
+        //SET thrott_point TO 1.
+      }
+    }
+    IF runmode <> 0 {
+  		f_info_screen().
+  	}
+
+}
+
 
 // SET sP TO 10.
 // SET sI TO 0.1.
