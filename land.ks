@@ -2,157 +2,156 @@
 //created and shared under the MIT License by FlightZero.
 
 run functionlibrary.
-SET current_script TO "LAND 0.2 build 1".
-SET current_status TO "INITIALIZED".
-set data2title TO "PERIAPSIS: ".
-set data2length TO 11.
-set data2 TO ROUND(PERIAPSIS).
+
+DECLARE PARAMETER tgtlat IS -16.3477.
+DECLARE PARAMETER tgtlng IS 84.4849.
+SET tgt TO LATLNG(tgtlat,tgtlng).
+
+set correction_pid to pidloop(1,0.2,0,-15,15).
+SET correction_pid:SETPOINT TO 0.
+
+set throttle_pid to pidloop(1.75,0.2,0,0,1).
+SET throttle_pid:SETPOINT TO -2.
+
+SET g_a TO CONSTANT:G * BODY:Mass / BODY:RADIUS^2.
+
+LOCK ship_a TO MAXTHRUST / MASS.
+LOCK burn_dist TO (SHIP:GROUNDSPEED^2 ) / (2 *  (ship_a - g_a)).
+SET true_alt TO 0.
+
+
+//intialize data which will be displayed for this script
+SET datalist[0][0] TO "LAND 0.2 build 1".
+SET datalist[0][1] TO "INITIALIZED".
+SET datalist[1] TO list("PERIAPSIS: ", ROUND(PERIAPSIS),11).
+SET datalist[3] TO list("IMPACT: ",0,9).
+//this is the info you want refreshed every tick
+
+DECLARE function f_updateinfo {
+	SET datalist[1][1] TO ROUND(PERIAPSIS).
+}
 
 
 SAS OFF.
+SET thrott_point TO 0.
+LOCK THROTTLE TO thrott_point.
+
+DECLARE function f_estimate_deorbit_t {
+  SET deorbit_t TO (
+    (ORBIT:PERIOD / 4) +
+    //(f_period_future_obt(APOAPSIS,15000)*.5) +
+    120
+  ).
+  RETURN deorbit_t.
+}
+
+
 SET runmode to 1.
 
 UNTIL runmode = 0 {
-    IF runmode = 1 {
-      SET current_status TO "DEORBIT BURN".
-      SET retro TO R(RETROGRADE:PITCH, RETROGRADE:YAW, SHIP:FACING:ROLL).
-      LOCK steering to retro.
-      IF vdot(RETROGRADE:VECTOR, SHIP:FACING:VECTOR) > .99 {
-        SET current_status TO "ALIGNED".
-        //SET thrott_point TO 1.
+
+    IF runmode = 1{
+      SET datalist[0][1] TO "PLANE CHANGE MANEUVER".
+      SET WARP TO 4.
+      IF f_deg((f_deg(tgtlng) + 90 ) - f_deg(SHIP:GEOPOSITION:LNG)) < 1 {
+	      SET warp to 0.
+	      local deltav IS 2*ship:velocity:orbit:mag * sin(abs(tgtlat)/2).
+	      local nd is node(time:seconds + 120, 0, deltav,0).
+	    	add nd.
+	      run donode.
+	      Wait 1.
+	      SET runmode TO 2.
       }
     }
+
+    IF runmode = 2 {
+      SET datalist[0][1] TO "LOW ORBIT BURN".
+			SET WARP TO 4.
+			IF f_deg((f_deg(tgtlng) + 180 ) - f_deg(SHIP:GEOPOSITION:LNG)) < 1 {
+				SET WARP TO 0.
+      	f_arbitrary_node(60,15000).
+      	run donode.
+      	SET runmode TO 3.
+			}
+    }
+
+    IF runmode = 3 {
+      SET datalist[0][1] TO "MOVE TO DEORBIT".
+      SET retro TO R(RETROGRADE:PITCH, RETROGRADE:YAW, SHIP:FACING:ROLL).
+      LOCK STEERING TO retro.
+			WAIT 1.
+    	SET WARP TO 4.
+			IF ETA:PERIAPSIS < SHIP:ORBIT:PERIOD/4 {
+				SET WARP TO 0.
+				SET runmode TO 4.
+			}
+		}
+
+		IF runmode = 4 {
+			SET datalist[0][1] TO "DEORBIT BURN".
+      SET retro TO R(RETROGRADE:PITCH, RETROGRADE:YAW, SHIP:FACING:ROLL).
+      LOCK STEERING TO retro.
+			WAIT 1.
+			LOCK THROTTLE TO 0.1.
+			IF ADDONS:TR:HASIMPACT = TRUE {
+				IF f_deg(ADDONS:TR:IMPACTPOS:LNG) < tgtlng + 0.1 {
+					LOCK THROTTLE TO 0.
+					SET runmode TO 6.
+				}
+  		}
+		}
+
+		//this is meant to be an error correction step, but it's still being worked on. 
+		IF runmode = 5 {
+			SET datalist[0][1] TO "CORRECTION".
+			SET impact_lat TO ADDONS:TR:IMPACTPOS:LAT.
+			SET impact_lng TO ADDONS:TR:IMPACTPOS:LNG.
+			SET x_error TO impact_lng - tgtlng.
+			SET y_error TO impact_lat - tgtlat.
+			SET total_error TO SQRT(x_error^2 + y_error^2).
+			SET correction_heading TO f_error_heading(x_error,y_error).
+			LOCK STEERING TO HEADING(correction_heading, 0).
+			UNTIL total_error < .003 { LOCK THROTTLE TO 0.05.}
+			LOCK THROTTLE TO 0.
+			SET datalist[0][1] TO "ON TARGET".
+			SET runmode TO 6.
+		}
+
+		IF runmode = 6 {
+			SET datalist[0][1] TO "POWERED DESCENT".
+			SET datalist[3] TO list("BURN OFFSET: ", ROUND(burn_dist), 13).
+			SET datalist[4] TO list("DISTANCE: ", ROUND(ADDONS:TR:IMPACTPOS:DISTANCE), 10).
+
+			LOCK STEERING TO SHIP:SRFRETROGRADE.
+			GEAR ON.
+			SET true_alt TO ADDONS:TR:IMPACTPOS:DISTANCE - ADDONS:TR:IMPACTPOS:TERRAINHEIGHT.
+			WHEN ADDONS:TR:IMPACTPOS:DISTANCE - ADDONS:TR:IMPACTPOS:TERRAINHEIGHT < burn_dist + 100 THEN {  //SHIP:GEOPOSITION:TERRAINHEIGHT
+				LOCK THROTTLE TO 1.
+				WHEN SHIP:VERTICALSPEED >= -10 THEN {
+					SET runmode TO 7.
+				}
+			}
+		}
+
+		IF runmode = 7 {
+			UNTIL SHIP:STATUS = "LANDED"{
+				SET true_alt TO SHIP:ALTITUDE - ADDONS:TR:IMPACTPOS:TERRAINHEIGHT.
+				LOCK STEERING TO LOOKDIRUP(UP:VECTOR - .1 * vxcl(up:vector, velocity:surface), ship:facing:topvector).
+				IF true_alt < 5 {SET throttle_pid:SETPOINT TO -1.}
+				ELSE {SET throttle_pid:SETPOINT TO -((true_alt * 0.1) + 4).}
+				LOCK THROTTLE TO throttle_pid:UPDATE(TIME:SECONDS, SHIP:VERTICALSPEED).
+				CLEARSCREEN.
+				PRINT true_alt.
+			}
+			IF SHIP:STATUS = "LANDED" {
+				PRINT "LANDED".
+				SET runmode TO 0.
+				LOCK THROTTLE TO 0.
+			}
+		}
+
     IF runmode <> 0 {
   		f_info_screen().
   	}
 
 }
-
-
-// SET sP TO 10.
-// SET sI TO 0.1.
-// SET sD TO 0.05.
-// SET sSP TO 0.
-// SET p_pid TO PIDLOOP(sP, sI, sD, -50, 50).
-// SET p_pid:SETPOINT TO sSP.
-// SET y_pid TO PIDLOOP(sP, sI, sD, -50, 50).
-// SET y_pid:SETPOINT TO sSP.
-//
-// SET my_pitch TO 0.
-// SET my_yaw TO 0.
-//
-// SET g TO BODY:MU / BODY:RADIUS^2.
-// LOCK accvec TO SHIP:SENSORS:ACC - SHIP:SENSORS:GRAV.
-// LOCK gforce TO accvec:MAG / g.
-//
-// SET gforce_setpoint TO 1.
-// SET goal_altitude TO 150.
-// SET goal_speed TO 0.
-//
-// SET Kp to 0.4.
-// SET Kd to 0.4.
-//
-// SET current_script TO "LAND build 4".
-// SET current_status TO "INITIALIZED".
-//
-// // All running engines
-// LIST ENGINES IN all_engines.
-// // Use first (and only) for calculations (assuming ship with single engine)
-// SET curr_engine TO all_engines[0].
-//
-// SET thrott_point TO 0.
-// LOCK THROTTLE TO thrott_point.
-//
-//
-//
-// SET runmode to 1.
-//
-// SAS off.
-//
-// UNTIL runmode = 0 {
-//
-//   // 1. DEORBIT: If in orbit, lock to retrograde and burn until there's an intersect with the surface.
-//   IF runmode = 1 {
-//     SET current_status TO "DEORBIT BURN".
-//     LOCK steering TO RETROGRADE.
-//     SET thrott_point TO 1.
-//
-//     IF PERIAPSIS < -30000 {
-//       SET thrott_point TO 0.
-//       SET runmode TO 2.
-//     }
-//
-//   }
-//
-// //COAST TO HORIZONTAL VELOCITY CANCEL BURN (HVCB)
-// //Execute HVCB
-//   IF runmode = 2 {
-//     SET current_status TO "COAST TO HVCB".
-//
-//     IF SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT < 10000 {
-//
-//       SET current_status TO "EXECUTE HVCB".
-//       LOCK STEERING TO LOOKDIRUP(UP:VECTOR - .1 * vxcl(up:vector, velocity:surface), ship:facing:topvector).
-//       SET thrott_point TO 1.
-//       WHEN ship:groundspeed <= 5 THEN {
-//         SET thrott_point TO 0.
-//         SET runmode to 3.
-//       }
-//     }
-//   }
-//   //Coast to suicide burn
-//   IF runmode = 3 {
-//     SET current_status TO "COAST TO VERT VCB".
-//     LOCK STEERING TO SHIP:SRFRETROGRADE.
-//     LOCAL force_g IS CONSTANT:G * BODY:Mass / BODY:RADIUS^2.
-//     LOCAL b_mass IS BODY:MASS.
-//     LOCAL max_acceleration IS AVAILABLETHRUST / MASS.
-//     LOCAL P_i IS SHIP:ALTITUDE + BODY:RADIUS.
-//     LOCAL P_f IS SHIP:ALTITUDE - ALT:RADAR.
-//     //LOCK P_x TO ( CONSTANT:G * b_mass * ( (1 / P_f)  - (1/P_i)) / max_acceleration) + P_f.
-//     LOCK burn_height TO  SHIP:VERTICALSPEED^2 / (2 * (max_acceleration - force_g)).//SHIP:SENSORS:GRAV:MAG).
-//
-//     //Suicide burn
-//     //landing equation from CalebJ2
-//     //https://github.com/CalebJ2/kOS-landing-script/blob/master/land.ks
-//     WHEN SHIP:ALTITUDE - SHIP:GEOPOSITION:TERRAINHEIGHT <= burn_height + 15 THEN {
-//       SET current_status TO "EXECUTE VERT VCB".
-//       SET thrott_point TO 1.
-//       LOCK STEERING TO LOOKDIRUP(UP:VECTOR - .1 * vxcl(up:vector, velocity:surface), ship:facing:topvector).//SHIP:UP + R(my_pitch, my_yaw, 180 ).
-//
-//       WHEN SHIP:VERTICALSPEED >= -2 THEN {
-//         SET runmode TO 4.
-//       }
-//     }
-//   }
-//
-//   IF runmode = 4 {
-//
-//     GEAR ON.
-//
-//     SET current_status TO "CONTROLLED DESCENT".
-//
-//     SET my_pitch TO -1 * p_pid:UPDATE(TIME:SECONDS, SHIP:VELOCITY:SURFACE * ship:facing:topvector).
-//     SET my_yaw TO  y_pid:UPDATE(TIME:SECONDS, SHIP:VELOCITY:SURFACE * ship:facing:starvector).
-//
-//     SET goal_speed TO -2.
-//     LOCK hover_throttle_level TO MIN(1, MAX(0, SHIP:MASS * g / MAX(0.0001, curr_engine:AVAILABLETHRUST))).
-//     LOCK dthrott_d to Kd * (goal_speed - SHIP:VERTICALSPEED).
-//     LOCK dthrott TO dthrott_d.
-//
-//     SET Kp to 0.
-//     SET thrott_point to hover_throttle_level + dthrott.
-//     IF SHIP:STATUS = "LANDED" {
-//
-//       LOCK THROTTLE to 0.
-//       SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
-//       unlock throttle.
-//       unlock steering.
-//       SAS ON.
-//       SET current_status TO "LANDED".
-//       SET runmode to 0.
-//     }
-//   }
-//
-// f_info_screen().
-// }
