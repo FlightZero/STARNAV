@@ -19,10 +19,10 @@ This is how I'll standardize my code. I've tried to fall in line with what other
             action.
           }
 ```
-- Commands, flow control, kOS variables: UPPERCASE for clarity, and to role-play working on 1970's era computers.
+- Commands, flow control, kOS variables: UPPERCASE for clarity, and to role-play working on 1970's era computers. Note: the community seems to be moving to lowercase, so new code will be written to this standard. 
 - Indents: one space.
 - Names:
   - Programs: one or two-word. "program.ks"
   - Programs with parameter: Two word. "launch_to.ks"
-  - Functions: two word, preceded by "f_". "f_info_screen"
+  - Functions: see variables. 
   - Variables: descriptive, two word. "lower_case"
