@@ -1,5 +1,5 @@
 //gotomun.ks: creates a maneuver node for an orbit which intersects with the mun
-//start with 100k circular orbit 
+//start with 100km circular orbit 
 //flightzero
 
 function bodyang
