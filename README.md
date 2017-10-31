@@ -15,11 +15,11 @@ As my first foray into kOS, this will be centralized place to store, update and 
 This is how I'll standardize my code. I've tried to fall in line with what other community members seem to be converging on for Kerbal Script, but I'll use my own conventions where I think it helps with clarity/ readability/ my personal understanding.
 - Brackets:
 ```        
-          IF x THEN {
+          if x then {
             action.
           }
 ```
-- Commands, flow control, kOS variables: UPPERCASE for clarity, and to role-play working on 1970's era computers. Note: the community seems to be moving to lowercase, so new code will be written to this standard. 
+- The community seems to be moving to lowercase, so new code will be written to this standard. 
 - Indents: one space.
 - Names:
   - Programs: one or two-word. "program.ks"
